@@ -1,4 +1,8 @@
 
+import matplotlib.pyplot as plt
+import numpy as np
+fig, ax = plt.subplots()
+
 x_points=[90,	
 85,	
 80,	
@@ -6,7 +10,7 @@ x_points=[90,
 70,	
 65,	
 60,	
-55
+55	
 ]
 y_points=[0.107,
 0.105,
@@ -17,10 +21,13 @@ y_points=[0.107,
 0.0965,
 0.0945
 ]
-x_error =[0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5]
-y_error =[0.0005,0.0005,0.0005,0.0005,0.0005,0.0005,0.0005,0.0005,0.0005]
+x_error =[0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5
+]
+y_error =[0.0005,0.0005,0.0005,0.0005,0.0005,0.0005,0.0005,0.0005]
 x_step  =0.01
 y_step  =0.0001
+
+ax.errorbar(x_points,y_points,y_error,x_error)
 
 iteration = 0
 
@@ -40,8 +47,11 @@ smallest_intercept=0
 smallest=0
 largest_intercept=0
 
-x_movements = [(lengthx-2*i)*x_step for i in range(lengthx)]
-y_movements = [(lengthy-2*i)*y_step for i in range(lengthy)]
+ys=[]
+xs=[]
+
+x_movements = [(lengthx-2*i)*x_step for i in range(lengthx+1)]
+y_movements = [(lengthy-2*i)*y_step for i in range(lengthy+1)]
 
 
 def get_grad(x1,x2,y1,y2):
@@ -91,3 +101,12 @@ try:
 
 except KeyboardInterrupt:
     print("Cancelled by user")
+
+
+x = np.linspace(50,90,100)
+y = largest*x+smallest_intercept
+x2 = np.linspace(50,90,100)
+y2 = smallest*x+largest_intercept
+plt.plot(x, y, '-r', label='largest')
+plt.plot(x2, y2, '-r', label='smallest')
+plt.show()
