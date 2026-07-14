@@ -3,38 +3,53 @@ import matplotlib.pyplot as plt
 import numpy as np
 fig, ax = plt.subplots()
 
-x_points=[90,	
-85,	
-80,	
-75,	
-70,	
-65,	
-60,	
-55	
+x_points = [
+    80,
+75,
+70,
+65,
+60,
+55,
+50,
+45
 ]
-y_points=[0.107,
-0.105,
-0.103,
-0.1015,
-0.1,
-0.098,
-0.0965,
-0.0945
-]
-x_error =[0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5
-]
-y_error =[0.0005,0.0005,0.0005,0.0005,0.0005,0.0005,0.0005,0.0005]
-x_step  =0.01
-y_step  =0.0001
 
-ax.errorbar(x_points,y_points,y_error,x_error)
+y_points = [
+    10.2,
+10,
+9.9,
+9.9,
+9.8,
+9.7,
+9.6,
+9.5
+]
+
+y_error = [
+    0.1,
+    0.1,
+    0.1,
+    0.1,
+    0.1,
+    0.1,
+    0.1,
+    0.1
+]
+
+x_error = [
+    1,1,1,1,1,1,1,1
+]
+x_step  =0.1
+y_step  =0.01
+
+
 
 iteration = 0
 
 lengthx =int((2*x_error[-1])/x_step)
 lengthy =int((2*y_error[-1])/y_step)
 total =((lengthx**2)*(lengthy**2))
-if total >1000000:
+if total >10000000:
     if input("Warning, a lot of iterations. Type Y to continue or N to bail ").upper() == "N":
         raise Exception("Bail")
 if total > 1000000:
@@ -61,8 +76,21 @@ def get_y_intercept(x,y,gradient):
 def get_y(x,gradient,intercept):
     return x*gradient +intercept
 gradient = get_grad(x_points[0],x_points[-1],y_points[0],y_points[-1])
+intercept = get_y_intercept(x_points[0],y_points[0],gradient)
 largest = gradient
 smallest=gradient
+
+for point in x_points:
+    y=get_y(point,gradient,intercept)
+    index = x_points.index(point)
+    if abs(y -y_points[index]) > y_error[index]:
+        plt.errorbar(point,y_points[index],y_error[index],x_error[index])
+        x_points.pop(index)
+        y_points.pop(index)
+        x_error.pop(index)
+        y_error.pop(index)
+
+ax.errorbar(x_points,y_points,y_error,x_error)
 try:
     for k in range(lengthx):
         print(f"{100*k/lengthx:.1f}%")
@@ -94,19 +122,21 @@ try:
                             smallest = gradient
                             largest_intercept = intercept
 
-    print("The highest gradient was",largest,".With a y intercept of",smallest_intercept)
-    print("the smallest gradient was",smallest,".With a y intercept of",largest_intercept)  
-    delta_g = (largest-smallest)/2
-    print("Gradient uncertainty is +-",delta_g)
+    
 
 except KeyboardInterrupt:
     print("Cancelled by user")
 
 
-x = np.linspace(50,90,100)
+print("The highest gradient was",largest,".With a y intercept of",smallest_intercept)
+print("the smallest gradient was",smallest,".With a y intercept of",largest_intercept)  
+delta_g = (largest-smallest)/2
+print("Gradient uncertainty is +-",delta_g)
+
+x = np.linspace(x_points[0],x_points[-1],100)
+
 y = largest*x+smallest_intercept
-x2 = np.linspace(50,90,100)
 y2 = smallest*x+largest_intercept
 plt.plot(x, y, '-r', label='largest')
-plt.plot(x2, y2, '-r', label='smallest')
+plt.plot(x, y2, '-r', label='smallest')
 plt.show()
