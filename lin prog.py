@@ -43,7 +43,7 @@ result = linprog(
     [-1,0],
     A_ub=A,
     b_ub=b,
-    bounds=[(None,None),(None,None)]
+    bounds=[(None,None),(None,None)])
 
 gradient = result.x[0]
 intercept = result.x[1]
